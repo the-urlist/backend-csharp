@@ -1,0 +1,14 @@
+{
+    "IsEncrypted": false,
+    "Values": {
+        "AzureWebJobsStorage": "",
+        "URL_BLACKLIST": "",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+        "APPINSIGHTS_INSTRUMENTATIONKEY": "<--your application insights key-->",
+        "LinkLinkConnection": "<--your cosmosdb connection string-->"
+    },
+    "Host": {
+        "LocalHttpPort": 7071,
+        "CORS": "*"
+    }
+}

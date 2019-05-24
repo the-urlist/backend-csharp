@@ -1,0 +1,16 @@
+{
+	"id": "ec5d368d-6120-4350-a3aa-4d0293c172b9",
+	"name": "Localhost",
+	"values": [
+		{
+			"key": "host",
+			"value": "http://localhost:7071",
+			"type": "text",
+			"description": "",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2019-05-02T02:10:03.603Z",
+	"_postman_exported_using": "Postman/6.7.4"
+}

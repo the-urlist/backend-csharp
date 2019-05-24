@@ -1,0 +1,112 @@
+{
+	"info": {
+		"_postman_id": "be94656c-bd40-4bde-aa58-59953157dfd8",
+		"name": "The URList API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Save Bundle",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"links\": [{\n        \"id\": \"cjsorrho200023h5poelwd47z\",\n        \"url\": \"facebook.com\",\n        \"title\": \"Facebook - Log In or Sign Up\",\n        \"description\": \"Create an account or log into Facebook. Connect with friends, family and other people you know. Share photos and videos, send messages and get updates.\",\n        \"image\": \"//www.facebook.com/images/fb_icon_325x325.png\"\n    }, {\n        \"id\": \"cjsorr5bs00003h5pzs3iu49c\",\n        \"url\": \"microsoft.com\",\n        \"title\": \"Microsoft - Official Home Page\",\n        \"description\": \"At Microsoft our mission and values are to help people and businesses throughout the world realize their full potential.\",\n        \"image\": \"\"\n    }, {\n        \"id\": \"cjsorrc5d00013h5p3e1f8tgk\",\n        \"url\": \"google.com\",\n        \"title\": \"Google\",\n        \"description\": \"Search the world's information, including webpages, images, videos and more. Google has many special features to help you find exactly what you're looking for.\",\n        \"image\": \"\"\n    }],\n    \"vanityUrl\": \"postman-test\",\n    \"description\": \"\",\n    \"userId\": \"cecilphillip\"\n}"
+				},
+				"url": {
+					"raw": "{{host}}/api/links",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"links"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get bundle for vanity url",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "07b46808-7be2-4622-af17-736318e7b710",
+						"exec": [
+							"pm.variables.set('vanityUrl', \"postman-test\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "0db94e0a-48d4-4831-96a2-af7998e97bbc",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}/api/links/{{vanityUrl}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"links",
+						"{{vanityUrl}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Validate Page",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"url\" : \"marketplace.visualstudio.com/items? itemName=sdras vue-vscode-extensionpack\",\n\t\"id\" : \"1\"\n}"
+				},
+				"url": {
+					"raw": "{{host}}/api/validatePage",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"validatePage"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
