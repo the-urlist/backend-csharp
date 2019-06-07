@@ -1,0 +1,103 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "runFunctionsHost",
+            "type": "process",
+            "dependsOn": "build",
+            "options": {
+                "cwd": "${workspaceFolder}/src/LinkyLink/bin/Debug/netcoreapp2.2/"
+            },
+            "command": "func",
+            "args": [
+                "host",
+                "start"
+            ],
+            "problemMatcher": "$func-watch"
+        },
+        {
+            "label": "publish",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "--configuration",
+                "Release",
+                "${workspaceFolder}/src/LinkyLink/LinkyLink.csproj"
+            ],
+            "dependsOn": "clean release",
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/LinkyLink/LinkyLink.csproj"
+            ],
+            "dependsOn": "clean",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "clean",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "clean",
+                "${workspaceFolder}/src/LinkyLink/LinkyLink.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "clean release",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "clean",
+                "--configuration",
+                "Release",
+                "${workspaceFolder}/src/LinkyLink/LinkyLink.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "clean solution",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "clean",
+                "${workspaceFolder}/LinkyLink.sln"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build tests",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/tests/LinkyLink.Tests/LinkyLink.Tests.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "run tests",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "test",
+                "${workspaceFolder}/tests/LinkyLink.Tests/LinkyLink.Tests.csproj"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        }
+    ]
+}
