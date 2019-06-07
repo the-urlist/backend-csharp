@@ -50,7 +50,7 @@ Start the function via the command line
 func start
 ```
 
-![func start](../docs/func_start.png)
+![func start](docs/func_start.png)
 
 Alternatively, start a debuging session in `Visual Studio` or  `Visual Studio Code`.
 
@@ -60,10 +60,10 @@ Alternatively, start a debuging session in `Visual Studio` or  `Visual Studio Co
 * Next import the `theurlist_localhost_env.json` file. That includes the Localhost environment settings.
 * Set your environment to `Localhost`
 
-![postman](../docs/postman_localhost.png)
+![postman](docs/postman_localhost.png)
 
 * Run `Save Bundle` to add some data to Cosmos DB. Next run `Get bundle for vanity url` to retrieve the entry you just created.
 
 If everything was setup correctly, your should see a response that resembles the following.
 
-![postman](../docs/postman_response.png)
+![postman](docs/postman_response.png)
