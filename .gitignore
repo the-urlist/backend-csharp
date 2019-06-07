@@ -362,3 +362,4 @@ MigrationBackup/
 
 
 .DS_Store
+local.settings.json
