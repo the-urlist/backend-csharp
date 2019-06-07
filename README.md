@@ -21,7 +21,7 @@ The backend for this project was built as a serverless API using Azure Functions
 
 Navigate into backend folder
 ```bash
-cd backend/src/LinkyLink
+cd /src/LinkyLink
 ```
 
 Build the project
