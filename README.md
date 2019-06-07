@@ -43,7 +43,7 @@ REN local.settings.sample.json local.settings.json
 
 Update the `local.settings.json` file with your Application Insights key to the `APPINSIGHTS_INSTRUMENTATIONKEY` setting. You could also just remove this if you don't want to use Application Inisghts.
 
-[Create an a Cosmos DB instance](https://docs.microsoft.com/en-us/azure/cosmos-db/how-to-manage-database-account?WT.mc_id=theurlist-github-cephilli) in Azure using the SQL API. Update the `local.settings.json` file with your Cosmos DB connection string in the `LinkLinkConnection` settings.
+[Create an a Cosmos DB instance](https://docs.microsoft.com/en-us/azure/cosmos-db/how-to-manage-database-account?WT.mc_id=theurlist-github-cephilli) in Azure using the SQL API. Update the `local.settings.json` file with your Cosmos DB connection string in the `LinkLinkConnection` settings. This database will initially be empty. If you try out the API with Postman (see below), the collection and sample documents will be created for you automatically. Otherwise it's structure will be created when you create your first list through the frontend.
 
 Start the function via the command line
 ```bash
@@ -62,7 +62,7 @@ Alternatively, start a debuging session in `Visual Studio` or  `Visual Studio Co
 
 ![postman](docs/postman_localhost.png)
 
-* Run `Save Bundle` to add some data to Cosmos DB. Next run `Get bundle for vanity url` to retrieve the entry you just created.
+* Run `Save Bundle` to add some data to Cosmos DB. The structure (collection, documents, etc.) in the database will be created for you if it does not exsist yet. Next run `Get bundle for vanity url` to retrieve the entry you just created.
 
 If everything was setup correctly, your should see a response that resembles the following.
 
