@@ -13,6 +13,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using Microsoft.ApplicationInsights.DataContracts;
 using System.Text.RegularExpressions;
+using LinkyLink.Models;
 
 namespace LinkyLink
 {

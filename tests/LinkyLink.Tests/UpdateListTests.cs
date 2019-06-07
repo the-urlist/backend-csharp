@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using FakeItEasy;
 using FakeItEasy.Core;
+using LinkyLink.Models;
 using LinkyLink.Tests.Helpers;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Http;

@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using FakeItEasy;
+using LinkyLink.Models;
 using LinkyLink.Tests.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

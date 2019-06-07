@@ -7,6 +7,7 @@ using AutoFixture;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using Microsoft.Azure.Documents;
+using LinkyLink.Models;
 
 namespace LinkyLink.Tests
 {

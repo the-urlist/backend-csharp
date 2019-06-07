@@ -11,8 +11,8 @@ using OpenGraphNet;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using HtmlAgilityPack;
+using LinkyLink.Models;
 
 namespace LinkyLink
 {
