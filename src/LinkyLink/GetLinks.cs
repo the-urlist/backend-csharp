@@ -10,10 +10,10 @@ using LinkyLink.Models;
 
 namespace LinkyLink
 {
-    public static partial class LinkOperations
+    public partial class LinkOperations
     {
         [FunctionName(nameof(GetLinks))]
-        public static IActionResult GetLinks(
+        public IActionResult GetLinks(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "links/{vanityUrl}")] HttpRequest req,
             [CosmosDB(
                 databaseName: "linkylinkdb",
@@ -36,7 +36,7 @@ namespace LinkyLink
         }
 
         [FunctionName(nameof(GetBundlesForUser))]
-        public static IActionResult GetBundlesForUser(
+        public IActionResult GetBundlesForUser(
            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "links/user/{userId}")] HttpRequest req,
            [CosmosDB(
                 databaseName: "linkylinkdb",
@@ -47,7 +47,7 @@ namespace LinkyLink
            string userId,
            ILogger log)
         {
-            string twitterHandle = GetTwitterHandle(req);
+            string twitterHandle = GetTwitterHandle();
             if (string.IsNullOrEmpty(twitterHandle) || twitterHandle != userId)
             {
                 log.LogInformation("Client is not authorized");

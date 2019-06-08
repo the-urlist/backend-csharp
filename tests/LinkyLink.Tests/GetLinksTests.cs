@@ -21,7 +21,7 @@ namespace LinkyLink.Tests
             ILogger fakeLogger = A.Fake<ILogger>();
 
             // Act
-            IActionResult result = LinkOperations.GetLinks(this.DefaultRequest, docs, "vanityUrl", fakeLogger);
+            IActionResult result = _linkOperations.GetLinks(this.DefaultRequest, docs, "vanityUrl", fakeLogger);
 
             // Assert
             Assert.IsType<NotFoundResult>(result);
@@ -38,7 +38,7 @@ namespace LinkyLink.Tests
             var docs = Fixture.CreateMany<LinkBundle>(1);
 
             // Act
-            IActionResult result = LinkOperations.GetLinks(this.DefaultRequest, docs, string.Empty, A.Dummy<ILogger>());
+            IActionResult result = _linkOperations.GetLinks(this.DefaultRequest, docs, string.Empty, A.Dummy<ILogger>());
 
             // Assert
             Assert.IsType<OkObjectResult>(result);
@@ -50,9 +50,11 @@ namespace LinkyLink.Tests
         {
             // Arrange
             ILogger fakeLogger = A.Fake<ILogger>();
+            RemoveAuthFromContext();
 
             // Act
-            IActionResult result = LinkOperations.GetBundlesForUser(this.DefaultRequest, A.Dummy<IEnumerable<Document>>(), "userid", fakeLogger);
+            IActionResult result = _linkOperations.GetBundlesForUser(this.DefaultRequest, A.Dummy<IEnumerable<Document>>(), "userid", fakeLogger);
+            AddAuthToContext();
 
             // Assert
             Assert.IsType<UnauthorizedResult>(result);
@@ -70,7 +72,7 @@ namespace LinkyLink.Tests
             ILogger fakeLogger = A.Fake<ILogger>();
 
             // Act
-            IActionResult result = LinkOperations.GetBundlesForUser(this.AuthenticatedRequest, docs, "userid", fakeLogger);
+            IActionResult result = _linkOperations.GetBundlesForUser(this.AuthenticatedRequest, docs, "userid", fakeLogger);
 
             // Assert
             Assert.IsType<NotFoundResult>(result);
@@ -87,7 +89,7 @@ namespace LinkyLink.Tests
             var docs = Fixture.CreateMany<Document>();
 
             // Act
-            IActionResult result = LinkOperations.GetBundlesForUser(this.AuthenticatedRequest, docs, "userid", A.Dummy<ILogger>());
+            IActionResult result = _linkOperations.GetBundlesForUser(this.AuthenticatedRequest, docs, "userid", A.Dummy<ILogger>());
 
             //Assert
             Assert.IsType<OkObjectResult>(result);

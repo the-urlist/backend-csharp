@@ -8,18 +8,19 @@ using Xunit;
 
 namespace LinkyLink.Tests
 {
-    public class ValidatePageTests: TestBase
+    public class ValidatePageTests : TestBase
     {
         [Fact]
-        public async Task ValidatePage_Empty_Payload_Returns_BadRequest() {
+        public async Task ValidatePage_Empty_Payload_Returns_BadRequest()
+        {
             // Arrange
             HttpRequest req = this.AuthenticatedRequest;
             req.Body = this.GetHttpRequestBodyStream("");
 
             ILogger fakeLogger = A.Fake<ILogger>();
-            
+
             // Act
-            IActionResult result = await LinkOperations.ValidatePage(req, fakeLogger);
+            IActionResult result = await _linkOperations.ValidatePage(req, fakeLogger);
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);

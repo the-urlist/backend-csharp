@@ -25,7 +25,7 @@ namespace LinkyLink.Tests
             IAsyncCollector<LinkBundle> collector = A.Fake<IAsyncCollector<LinkBundle>>();
 
             // Act
-            IActionResult result = await LinkOperations.SaveLinks(req, collector, fakeLogger);
+            IActionResult result = await _linkOperations.SaveLinks(req, collector, fakeLogger);
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
@@ -51,7 +51,7 @@ namespace LinkyLink.Tests
             IAsyncCollector<LinkBundle> collector = A.Fake<IAsyncCollector<LinkBundle>>();
 
             // Act
-            IActionResult result = await LinkOperations.SaveLinks(req, collector, fakeLogger);
+            IActionResult result = await _linkOperations.SaveLinks(req, collector, fakeLogger);
 
             // Assert
             Assert.IsType<BadRequestResult>(result);
@@ -70,7 +70,7 @@ namespace LinkyLink.Tests
             IAsyncCollector<LinkBundle> collector = A.Fake<IAsyncCollector<LinkBundle>>();
 
             // Act
-            IActionResult result = await LinkOperations.SaveLinks(req, collector, fakeLogger);
+            IActionResult result = await _linkOperations.SaveLinks(req, collector, fakeLogger);
 
             // Assert
             Assert.IsType<CreatedResult>(result);
@@ -99,7 +99,7 @@ namespace LinkyLink.Tests
             IAsyncCollector<LinkBundle> collector = A.Fake<IAsyncCollector<LinkBundle>>();
 
             // Act
-            IActionResult result = await LinkOperations.SaveLinks(req, collector, fakeLogger);
+            IActionResult result = await _linkOperations.SaveLinks(req, collector, fakeLogger);
 
             // Assert
             Assert.IsType<CreatedResult>(result);
@@ -125,7 +125,7 @@ namespace LinkyLink.Tests
             IAsyncCollector<LinkBundle> collector = A.Fake<IAsyncCollector<LinkBundle>>();
 
             // Act
-            IActionResult result = await LinkOperations.SaveLinks(req, collector, fakeLogger);
+            IActionResult result = await _linkOperations.SaveLinks(req, collector, fakeLogger);
 
             // Assert
             Assert.IsType<CreatedResult>(result);

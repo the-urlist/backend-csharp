@@ -16,10 +16,10 @@ using Newtonsoft.Json;
 
 namespace LinkyLink
 {
-    public static partial class LinkOperations
+    public partial class LinkOperations
     {
         [FunctionName(nameof(UpdateList))]
-        public static async Task<IActionResult> UpdateList(
+        public async Task<IActionResult> UpdateList(
             [HttpTrigger(AuthorizationLevel.Function, "PATCH", Route = "links/{vanityUrl}")] HttpRequest req,
             [CosmosDB(
                 databaseName: "linkylinkdb",
@@ -31,7 +31,7 @@ namespace LinkyLink
             string vanityUrl,
             ILogger log)
         {
-            string handle = GetTwitterHandle(req);
+            string handle = GetTwitterHandle();
             if (string.IsNullOrEmpty(handle)) return new UnauthorizedResult();
 
             if (!documents.Any())

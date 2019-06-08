@@ -19,9 +19,11 @@ namespace LinkyLink.Tests
         {
             // Arrange            
             var docs = Fixture.CreateMany<Document>();
+            RemoveAuthFromContext();
 
             // Act
-            IActionResult result = await LinkOperations.DeleteLink(this.DefaultRequest, docs, null, "vanityUrl", A.Dummy<ILogger>());
+            IActionResult result = await _linkOperations.DeleteLink(this.DefaultRequest, docs, null, "vanityUrl", A.Dummy<ILogger>());
+            AddAuthToContext();
 
             // Assert
             Assert.IsType<UnauthorizedResult>(result);
@@ -35,7 +37,7 @@ namespace LinkyLink.Tests
             ILogger fakeLogger = A.Fake<ILogger>();
 
             // Act
-            IActionResult result = await LinkOperations.DeleteLink(this.AuthenticatedRequest, docs, null, "userid", fakeLogger);
+            IActionResult result = await _linkOperations.DeleteLink(this.AuthenticatedRequest, docs, null, "userid", fakeLogger);
 
             // Assert
             Assert.IsType<NotFoundResult>(result);
@@ -53,7 +55,7 @@ namespace LinkyLink.Tests
             ILogger fakeLogger = A.Fake<ILogger>();
 
             // Act
-            IActionResult result = await LinkOperations.DeleteLink(this.AuthenticatedRequest, docs, null, "userid", fakeLogger);
+            IActionResult result = await _linkOperations.DeleteLink(this.AuthenticatedRequest, docs, null, "userid", fakeLogger);
 
             // Assert
             Assert.IsType<StatusCodeResult>(result);

@@ -22,19 +22,16 @@ namespace LinkyLink.Tests
 {
     public class UpdateListTests : TestBase
     {
-        public UpdateListTests()
-        {
-            LinkOperations.telemetryClient = new TelemetryClient(this.DefaultTestConfiguration);
-        }
-
         [Fact]
         public async Task UpdateList_Request_Missing_Auth_Credentials_Should_Return_UnAuthorized()
         {
             // Arrange            
             var docs = Fixture.CreateMany<LinkBundle>();
+            RemoveAuthFromContext();
 
             // Act
-            IActionResult result = await LinkOperations.UpdateList(this.DefaultRequest, docs, null, "vanityUrl", A.Dummy<ILogger>());
+            IActionResult result = await _linkOperations.UpdateList(this.DefaultRequest, docs, null, "vanityUrl", A.Dummy<ILogger>());
+            AddAuthToContext();
 
             // Assert
             Assert.IsType<UnauthorizedResult>(result);
@@ -48,7 +45,7 @@ namespace LinkyLink.Tests
             ILogger fakeLogger = A.Fake<ILogger>();
 
             // Act
-            IActionResult result = await LinkOperations.UpdateList(this.AuthenticatedRequest, docs, null, "vanityUrl", fakeLogger);
+            IActionResult result = await _linkOperations.UpdateList(this.AuthenticatedRequest, docs, null, "vanityUrl", fakeLogger);
 
             // Assert
             Assert.IsType<NotFoundResult>(result);
@@ -81,7 +78,7 @@ namespace LinkyLink.Tests
             string vanityUrl = "vanity";
 
             // Act
-            IActionResult result = await LinkOperations.UpdateList(req, docs, docClient, vanityUrl, A.Dummy<ILogger>());
+            IActionResult result = await _linkOperations.UpdateList(req, docs, docClient, vanityUrl, A.Dummy<ILogger>());
 
             // Assert
             Assert.Equal("Description", captured.Description);
@@ -104,7 +101,7 @@ namespace LinkyLink.Tests
             string vanityUrl = "vanity";
 
             // Act
-            IActionResult result = await LinkOperations.UpdateList(req, docs, docClient, vanityUrl, logger);
+            IActionResult result = await _linkOperations.UpdateList(req, docs, docClient, vanityUrl, logger);
 
             // Assert
             Assert.IsType(returnType, result);
