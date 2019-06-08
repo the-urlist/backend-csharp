@@ -24,7 +24,8 @@ namespace LinkyLink
             [CosmosDB(
                 databaseName: "linkylinkdb",
                 collectionName: "linkbundles",
-                ConnectionStringSetting = "LinkLinkConnection"
+                ConnectionStringSetting = "LinkLinkConnection",
+                CreateIfNotExists = true
             )] IAsyncCollector<LinkBundle> documents,
             ILogger log)
         {
