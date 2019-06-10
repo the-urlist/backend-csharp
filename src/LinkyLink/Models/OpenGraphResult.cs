@@ -3,7 +3,7 @@ using HtmlAgilityPack;
 using Newtonsoft.Json;
 using OpenGraphNet;
 
-namespace LinkyLink
+namespace LinkyLink.Models
 {
     public class OpenGraphResult
     {
@@ -20,7 +20,7 @@ namespace LinkyLink
             Image = graph.Metadata["og:image"].FirstOrDefault()?.Value;
 
             //Default to og:description else fallback to description meta tag
-            string descriptionData = string.Empty;
+            var descriptionData = string.Empty;
             var descriptionNode = nodes.FirstOrDefault(n => n.Attributes.Contains("content")
                                               && n.Attributes.Contains("name")
                                               && n.Attributes["name"].Value == "description");

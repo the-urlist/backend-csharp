@@ -7,14 +7,20 @@ namespace LinkyLink.Infrastructure
 {
     public class HeaderTelemetryInitializer : ITelemetryInitializer
     {
+        private IHttpContextAccessor _contextAccessor;
+
+        public HeaderTelemetryInitializer(IHttpContextAccessor contextAccessor)
+        {
+            _contextAccessor = contextAccessor;
+        }
+
         public void Initialize(ITelemetry telemetry)
         {
             var requestTelemetry = telemetry as RequestTelemetry;
             // Is this a TrackRequest() ?
             if (requestTelemetry == null) return;
 
-            HttpContextAccessor accessor = new HttpContextAccessor();
-            var context = accessor.HttpContext;
+            var context = _contextAccessor.HttpContext;
         }
     }
 }

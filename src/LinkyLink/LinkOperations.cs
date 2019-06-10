@@ -10,23 +10,26 @@ using Microsoft.AspNetCore.Http;
 
 namespace LinkyLink
 {
-    public static partial class LinkOperations
+    public partial class LinkOperations
     {
-        public static TelemetryClient telemetryClient;
-        public static IBlackListChecker BlackListChecker = new EnvironmentBlackListChecker();
-        public const string CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        public const string VANITY_REGEX = @"^[\w\d-]+$";
+        protected IHttpContextAccessor _contextAccessor;
+        protected IBlackListChecker _blackListChecker;
+        protected TelemetryClient _telemetryClient;
+        protected const string CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        protected const string VANITY_REGEX = @"^[\w\d-]+$";
 
-        static LinkOperations()
+        public LinkOperations(IHttpContextAccessor contextAccessor, IBlackListChecker blackListChecker)
         {
+            _contextAccessor = contextAccessor;
+            _blackListChecker = blackListChecker;
             TelemetryConfiguration telemetryConfiguration = TelemetryConfiguration.CreateDefault();
-            telemetryConfiguration.TelemetryInitializers.Add(new HeaderTelemetryInitializer());
-            telemetryClient = new TelemetryClient(telemetryConfiguration);
+            telemetryConfiguration.TelemetryInitializers.Add(new HeaderTelemetryInitializer(contextAccessor));
+            _telemetryClient = new TelemetryClient(telemetryConfiguration);
         }
 
-        public static string GetTwitterHandle(HttpRequest req)
+        protected string GetTwitterHandle()
         {
-            ClaimsIdentity twitterIdentity = req.HttpContext.User.Identities.SingleOrDefault(id => id.AuthenticationType.Equals("twitter", StringComparison.InvariantCultureIgnoreCase));
+            ClaimsIdentity twitterIdentity = _contextAccessor.HttpContext.User.Identities.SingleOrDefault(id => id.AuthenticationType.Equals("twitter", StringComparison.InvariantCultureIgnoreCase));
             if (twitterIdentity != null)
             {
                 string handle = twitterIdentity.Claims.Single(c => c.Type == ClaimTypes.Upn).Value;
@@ -36,7 +39,7 @@ namespace LinkyLink
         }
 
         [ExcludeFromCodeCoverage]
-        public static void TrackRequestHeaders(HttpRequest req, string requestName)
+        protected void TrackRequestHeaders(HttpRequest req, string requestName)
         {
             var reqTelemetry = new RequestTelemetry() { Name = requestName };
             foreach (var kvp in req.Headers)
@@ -57,7 +60,7 @@ namespace LinkyLink
                 }
 
             }
-            telemetryClient.TrackRequest(reqTelemetry);
+            _telemetryClient.TrackRequest(reqTelemetry);
         }
     }
 }
