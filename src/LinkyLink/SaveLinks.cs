@@ -13,18 +13,20 @@ using System.Linq;
 using System.Security.Cryptography;
 using Microsoft.ApplicationInsights.DataContracts;
 using System.Text.RegularExpressions;
+using LinkyLink.Models;
 
 namespace LinkyLink
 {
-    public static partial class LinkOperations
+    public partial class LinkOperations
     {
         [FunctionName(nameof(SaveLinks))]
-        public static async Task<IActionResult> SaveLinks(
+        public async Task<IActionResult> SaveLinks(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "links")] HttpRequest req,
             [CosmosDB(
                 databaseName: "linkylinkdb",
                 collectionName: "linkbundles",
-                ConnectionStringSetting = "LinkLinkConnection"
+                ConnectionStringSetting = "LinkLinkConnection",
+                CreateIfNotExists = true
             )] IAsyncCollector<LinkBundle> documents,
             ILogger log)
         {
@@ -40,7 +42,7 @@ namespace LinkyLink
                     return new BadRequestObjectResult(problems);
                 }
 
-                string handle = GetTwitterHandle(req);
+                string handle = GetTwitterHandle();
                 linkDocument.UserId = handle;
                 EnsureVanityUrl(linkDocument);
 
@@ -52,7 +54,7 @@ namespace LinkyLink
                     return new BadRequestResult();
                 }
 
-                if (!await BlackListChecker.Check(linkDocument.VanityUrl))
+                if (!await _blackListChecker.Check(linkDocument.VanityUrl))
                 {
                     ProblemDetails blacklistProblems = new ProblemDetails
                     {
@@ -91,7 +93,7 @@ namespace LinkyLink
             }
         }
 
-        private static void EnsureVanityUrl(LinkBundle linkDocument)
+        private void EnsureVanityUrl(LinkBundle linkDocument)
         {
             if (string.IsNullOrWhiteSpace(linkDocument.VanityUrl))
             {
@@ -108,7 +110,7 @@ namespace LinkyLink
 
                 linkDocument.VanityUrl = new String(code);
 
-                telemetryClient.TrackEvent(new EventTelemetry { Name = "Custom Vanity Generated" });
+                _telemetryClient.TrackEvent(new EventTelemetry { Name = "Custom Vanity Generated" });
             }
 
             // force lowercase

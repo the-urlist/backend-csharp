@@ -15,10 +15,10 @@ using Microsoft.Azure.Documents.Linq;
 
 namespace LinkyLink
 {
-    public static partial class LinkOperations
+    public partial class LinkOperations
     {
         [FunctionName(nameof(DeleteLink))]
-        public static async Task<IActionResult> DeleteLink(
+        public async Task<IActionResult> DeleteLink(
             [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "links/{vanityUrl}")] HttpRequest req,
             [CosmosDB(
                 databaseName: "linkylinkdb",
@@ -30,7 +30,7 @@ namespace LinkyLink
             string vanityUrl,
             ILogger log)
         {
-            string handle = GetTwitterHandle(req);
+            string handle = GetTwitterHandle();
 
             //not logged in? Bye...
             if (string.IsNullOrEmpty(handle)) return new UnauthorizedResult();
@@ -65,12 +65,12 @@ namespace LinkyLink
         }
 
         [FunctionName(nameof(DeleteLinks))]
-        public static async Task<IActionResult> DeleteLinks(
+        public async Task<IActionResult> DeleteLinks(
            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "links")] HttpRequest req,
            [CosmosDB(ConnectionStringSetting = "LinkLinkConnection")] DocumentClient docClient,
            ILogger log)
         {
-            string handle = GetTwitterHandle(req);
+            string handle = GetTwitterHandle();
 
             //not logged in? Bye...
             if (string.IsNullOrEmpty(handle)) return new UnauthorizedResult();

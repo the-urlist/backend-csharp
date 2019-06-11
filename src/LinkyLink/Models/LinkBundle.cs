@@ -1,16 +1,16 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace LinkyLink
+namespace LinkyLink.Models
 {
     public class LinkBundle
     {
         public LinkBundle(string userId, string vanityUrl, string description, IDictionary<string, string>[] links)
         {
-            this.UserId = userId;
-            this.VanityUrl = vanityUrl;
-            this.Description = description;
-            this.Links = links;
+            UserId = userId;
+            VanityUrl = vanityUrl;
+            Description = description;
+            Links = links;
         }
 
         [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]

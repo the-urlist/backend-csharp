@@ -11,15 +11,15 @@ using OpenGraphNet;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using HtmlAgilityPack;
+using LinkyLink.Models;
 
 namespace LinkyLink
 {
-    public static partial class LinkOperations
+    public partial class LinkOperations
     {
         [FunctionName(nameof(ValidatePage))]
-        public static async Task<IActionResult> ValidatePage(
+        public async Task<IActionResult> ValidatePage(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "validatePage")] HttpRequest req,
             ILogger log)
         {
@@ -67,7 +67,7 @@ namespace LinkyLink
             }
         }
 
-        public static async Task<OpenGraphResult> GetGraphResult(dynamic singleLinkItem, ILogger log)
+        private async Task<OpenGraphResult> GetGraphResult(dynamic singleLinkItem, ILogger log)
         {
             string url = singleLinkItem.url, id = singleLinkItem.id;
             if (!string.IsNullOrEmpty(url) && !string.IsNullOrEmpty(id))
@@ -90,7 +90,7 @@ namespace LinkyLink
             return null;
         }
 
-        public static async Task<IEnumerable<OpenGraphResult>> GetMultipleGraphResults(dynamic multiLinkItem, ILogger log)
+        private async Task<IEnumerable<OpenGraphResult>> GetMultipleGraphResults(dynamic multiLinkItem, ILogger log)
         {
             log.LogInformation("Running batch url validation");
             IEnumerable<OpenGraphResult> allResults =

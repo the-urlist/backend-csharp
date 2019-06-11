@@ -72,7 +72,7 @@ namespace LinkyLink.Tests
 
             // Assert
             Assert.True(result_1);
-            Assert.True(!result_2);
+            Assert.False(result_2);
         }
     }
 }

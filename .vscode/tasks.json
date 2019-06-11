@@ -13,16 +13,13 @@
         },
         {
             "label": "runFunctionsHost",
-            "type": "process",
+            "type": "shell",
             "dependsOn": "build",
             "options": {
                 "cwd": "${workspaceFolder}/src/LinkyLink/bin/Debug/netcoreapp2.2/"
             },
-            "command": "func",
-            "args": [
-                "host",
-                "start"
-            ],
+            "command": "func host start",
+            "isBackground": true,
             "problemMatcher": "$func-watch"
         },
         {
