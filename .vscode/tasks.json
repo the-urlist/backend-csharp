@@ -2,6 +2,16 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "type": "func",
+            "dependsOn": "build",
+            "options": {
+                "cwd": "${workspaceFolder}/src/LinkyLink/bin/Debug/netcoreapp2.2/"
+            },
+            "command": "host start",
+            "isBackground": true,
+            "problemMatcher": "$func-watch"
+        },
+        {
             "label": "runFunctionsHost",
             "type": "process",
             "dependsOn": "build",

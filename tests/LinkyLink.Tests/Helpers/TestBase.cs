@@ -88,7 +88,7 @@ namespace LinkyLink.Tests.Helpers
 
         public Stream GetHttpRequestBodyStream(object bodyContent)
         {
-            byte[] bytes = null;
+            byte[] bytes = default;
             if (bodyContent is string bodyString)
             {
                 bytes = Encoding.UTF8.GetBytes(bodyString);
