@@ -1,19 +1,21 @@
 using System;
 using System.IO;
+using System.Linq;
+using System.Net;
+using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using LinkyLink.Models;
+using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Documents;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Microsoft.Azure.Documents;
-using System.Net;
-using System.Linq;
-using System.Security.Cryptography;
-using Microsoft.ApplicationInsights.DataContracts;
-using System.Text.RegularExpressions;
-using LinkyLink.Models;
+using QRCoder;
+using static QRCoder.PayloadGenerator;
 
 namespace LinkyLink
 {
@@ -70,6 +72,9 @@ namespace LinkyLink
                 }
 
                 await documents.AddAsync(linkDocument);
+
+                GenerateQRCode(linkDocument);
+
                 return new CreatedResult($"/{linkDocument.VanityUrl}", linkDocument);
             }
             catch (DocumentClientException ex) when (ex.StatusCode == HttpStatusCode.Conflict)
@@ -91,6 +96,17 @@ namespace LinkyLink
                 log.LogError(ex, ex.Message);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        private static void GenerateQRCode(LinkBundle linkDocument)
+        {
+            Url generator = new Url(linkDocument.VanityUrl);
+            string payload = generator.ToString();
+
+            QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(payload, QRCodeGenerator.ECCLevel.Q);
+            QRCode qrCode = new QRCode(qrCodeData);
+            var qrCodeAsBitmap = qrCode.GetGraphic(20);
         }
 
         private void EnsureVanityUrl(LinkBundle linkDocument)
