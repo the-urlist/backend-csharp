@@ -16,7 +16,7 @@ namespace LinkyLink
         protected IBlackListChecker _blackListChecker;
         protected TelemetryClient _telemetryClient;
         protected const string CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        protected const string VANITY_REGEX = @"^[\w\d-]+$";
+        protected const string VANITY_REGEX = @"^([\w\d-])+(/([\w\d-])+)*$";
 
         public LinkOperations(IHttpContextAccessor contextAccessor, IBlackListChecker blackListChecker)
         {
