@@ -12,11 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Azure.WebJobs.Extensions.Storage;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using QRCoder;
-using static QRCoder.PayloadGenerator;
 
 namespace LinkyLink
 {
@@ -31,7 +28,7 @@ namespace LinkyLink
                 ConnectionStringSetting = "LinkLinkConnection",
                 CreateIfNotExists = true
             )] IAsyncCollector<LinkBundle> documents,
-            IBinder binder,
+            Binder binder,
             ILogger log)
         {
             TrackRequestHeaders(req, $"{nameof(GetLinks)}-HeaderData");
@@ -75,7 +72,9 @@ namespace LinkyLink
 
                 await documents.AddAsync(linkDocument);
 
-                GenerateQRCode(linkDocument, binder);
+                string payload = req.Host + linkDocument.VanityUrl;
+
+                await GenerateQRCodeAsync(linkDocument, req, binder);
 
                 return new CreatedResult($"/{linkDocument.VanityUrl}", linkDocument);
             }
@@ -100,72 +99,47 @@ namespace LinkyLink
             }
         }
 
-        private static void GenerateQRCode(LinkBundle linkDocument, IBinder binder)
-        {
-            Url generator = new Url(linkDocument.VanityUrl);
-            string payload = generator.ToString();
-
-            QRCodeGenerator qrGenerator = new QRCodeGenerator();
-            QRCodeData qrCodeData = qrGenerator.CreateQrCode(payload, QRCodeGenerator.ECCLevel.Q);
-
-            PngByteQRCode qrCode = new PngByteQRCode(qrCodeData);
-            byte[] qrCodeAsPngByteArr = qrCode.GetGraphic(20);
-
-            var attributes = new Attribute[]
-            {
-                new BlobAttribute(blobPath: $"qrcodes/{linkDocument.VanityUrl}.png", FileAccess.Write),
-                new StorageAccountAttribute("MyStorageAccount")
-            };
-
-            
-
-            using (var writer = binder.Bind<TextWriter>(attributes))
-            {
-                writer.Write(qrCodeAsPngByteArr);
-            }
-        }
-
         private void EnsureVanityUrl(LinkBundle linkDocument)
-{
-    if (string.IsNullOrWhiteSpace(linkDocument.VanityUrl))
-    {
-        var code = new char[7];
-        var rng = new RNGCryptoServiceProvider();
-
-        var bytes = new byte[sizeof(uint)];
-        for (int i = 0; i < code.Length; i++)
         {
-            rng.GetBytes(bytes);
-            uint num = BitConverter.ToUInt32(bytes, 0) % (uint)CHARACTERS.Length;
-            code[i] = CHARACTERS[(int)num];
+            if (string.IsNullOrWhiteSpace(linkDocument.VanityUrl))
+            {
+                var code = new char[7];
+                var rng = new RNGCryptoServiceProvider();
+
+                var bytes = new byte[sizeof(uint)];
+                for (int i = 0; i < code.Length; i++)
+                {
+                    rng.GetBytes(bytes);
+                    uint num = BitConverter.ToUInt32(bytes, 0) % (uint)CHARACTERS.Length;
+                    code[i] = CHARACTERS[(int)num];
+                }
+
+                linkDocument.VanityUrl = new String(code);
+
+                _telemetryClient.TrackEvent(new EventTelemetry { Name = "Custom Vanity Generated" });
+            }
+
+            // force lowercase
+            linkDocument.VanityUrl = linkDocument.VanityUrl.ToLower();
         }
 
-        linkDocument.VanityUrl = new String(code);
-
-        _telemetryClient.TrackEvent(new EventTelemetry { Name = "Custom Vanity Generated" });
-    }
-
-    // force lowercase
-    linkDocument.VanityUrl = linkDocument.VanityUrl.ToLower();
-}
-
-private static bool ValidatePayLoad(LinkBundle linkDocument, HttpRequest req, out ProblemDetails problems)
-{
-    bool isValid = (linkDocument != null) && linkDocument.Links.Count() > 0;
-    problems = null;
-
-    if (!isValid)
-    {
-        problems = new ProblemDetails()
+        private static bool ValidatePayLoad(LinkBundle linkDocument, HttpRequest req, out ProblemDetails problems)
         {
-            Title = "Payload is invalid",
-            Detail = "No links provided",
-            Status = StatusCodes.Status400BadRequest,
-            Type = "/linkylink/clientissue",
-            Instance = req.Path
-        };
-    }
-    return isValid;
-}
+            bool isValid = (linkDocument != null) && linkDocument.Links.Count() > 0;
+            problems = null;
+
+            if (!isValid)
+            {
+                problems = new ProblemDetails()
+                {
+                    Title = "Payload is invalid",
+                    Detail = "No links provided",
+                    Status = StatusCodes.Status400BadRequest,
+                    Type = "/linkylink/clientissue",
+                    Instance = req.Path
+                };
+            }
+            return isValid;
+        }
     }
 }
