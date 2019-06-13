@@ -31,13 +31,13 @@ namespace LinkyLink
                 if (data is JArray)
                 {
                     // expecting a JSON array of objects with url(string), id(string)
-                    IEnumerable<OpenGraphResult> result = await GetMultipleGraphResults(data, log);
+                    IEnumerable<OpenGraphResult> result = await GetMultipleGraphResults(req, data, log);
                     return new OkObjectResult(result);
                 }
                 else if (data is JObject)
                 {
                     // expecting a JSON object with url(string), id(string)
-                    OpenGraphResult result = await GetGraphResult(data, log);
+                    OpenGraphResult result = await GetGraphResult(req, data, log);
                     return new OkObjectResult(result);
                 }
 
@@ -67,34 +67,40 @@ namespace LinkyLink
             }
         }
 
-        private async Task<OpenGraphResult> GetGraphResult(dynamic singleLinkItem, ILogger log)
+        private async Task<OpenGraphResult> GetGraphResult(HttpRequest req, dynamic singleLinkItem, ILogger log)
         {
             string url = singleLinkItem.url, id = singleLinkItem.id;
             if (!string.IsNullOrEmpty(url) && !string.IsNullOrEmpty(id))
             {
-                try
+                /**
+                    This check is a hack in support of adding our own URLs to lists. Rendered URLs return no Open Graph
+                    metadata and deep links return HTTP 404s when hosting in Blob storage. So we skip the HTTP request.
+                */
+                if (!req.Host.HasValue || !url.Contains(req.Host.Host))
                 {
-                    OpenGraph graph = await OpenGraph.ParseUrlAsync(url, "Urlist");
-                    HtmlDocument doc = new HtmlDocument();
-                    doc.LoadHtml(graph.OriginalHtml);
-                    var descriptionMetaTag = doc.DocumentNode.SelectSingleNode("//meta[@name='description']");
-                    var titleTag = doc.DocumentNode.SelectSingleNode("//head/title");
-                    return new OpenGraphResult(id, graph, descriptionMetaTag, titleTag);
-                }
-                catch (Exception ex)
-                {
-                    log.LogError(ex, ex.Message);
-                    return new OpenGraphResult { Id = id };
+                    try
+                    {
+                        OpenGraph graph = await OpenGraph.ParseUrlAsync(url, "Urlist");
+                        HtmlDocument doc = new HtmlDocument();
+                        doc.LoadHtml(graph.OriginalHtml);
+                        var descriptionMetaTag = doc.DocumentNode.SelectSingleNode("//meta[@name='description']");
+                        var titleTag = doc.DocumentNode.SelectSingleNode("//head/title");
+                        return new OpenGraphResult(id, graph, descriptionMetaTag, titleTag);
+                    }
+                    catch (Exception ex)
+                    {
+                        log.LogError(ex, "Processing URL {URL} failed. {Message}", url, ex.Message);
+                    }
                 }
             }
-            return null;
+            return new OpenGraphResult { Id = id };
         }
 
-        private async Task<IEnumerable<OpenGraphResult>> GetMultipleGraphResults(dynamic multiLinkItem, ILogger log)
+        private async Task<IEnumerable<OpenGraphResult>> GetMultipleGraphResults(HttpRequest req, dynamic multiLinkItem, ILogger log)
         {
             log.LogInformation("Running batch url validation");
             IEnumerable<OpenGraphResult> allResults =
-                await Task.WhenAll((multiLinkItem as JArray).Select(item => GetGraphResult(item, log)));
+                await Task.WhenAll((multiLinkItem as JArray).Select(item => GetGraphResult(req, item, log)));
 
             return allResults;
         }
