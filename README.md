@@ -1,4 +1,6 @@
 # The Urlist - Backend
+[![Build status](https://burkeknowswords.visualstudio.com/The%20Urlist/_apis/build/status/Serverless%20Backend%20Build)](https://burkeknowswords.visualstudio.com/The%20Urlist/_build/latest?definitionId=8)
+
 The backend for this project was built as a serverless API using Azure Functions and .NET. All the data is stored in a Cosmos DB collection using the SQL API.
 * [.NET Core](https://dotnet.microsoft.com?WT.mc_id=theurlist-github-cephilli)
 * [Azure Functions](https://azure.microsoft.com/services/functions/?WT.mc_id=theurlist-github-cephilli)
