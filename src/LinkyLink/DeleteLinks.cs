@@ -30,7 +30,7 @@ namespace LinkyLink
             string vanityUrl,
             ILogger log)
         {
-            string handle = GetTwitterHandle();
+            string handle = GetAccountInfo();
 
             //not logged in? Bye...
             if (string.IsNullOrEmpty(handle)) return new UnauthorizedResult();
@@ -41,7 +41,7 @@ namespace LinkyLink
                 return new NotFoundResult();
             }
 
-            Document doc = documents.Single();            
+            Document doc = documents.Single();
 
             try
             {
@@ -70,7 +70,7 @@ namespace LinkyLink
            [CosmosDB(ConnectionStringSetting = "LinkLinkConnection")] DocumentClient docClient,
            ILogger log)
         {
-            string handle = GetTwitterHandle();
+            string handle = GetAccountInfo();
 
             //not logged in? Bye...
             if (string.IsNullOrEmpty(handle)) return new UnauthorizedResult();
