@@ -58,30 +58,5 @@ namespace LinkyLink
             }
             return string.Empty;
         }
-
-        [ExcludeFromCodeCoverage]
-        protected void TrackRequestHeaders(HttpRequest req, string requestName)
-        {
-            var reqTelemetry = new RequestTelemetry() { Name = requestName };
-            foreach (var kvp in req.Headers)
-            {
-                reqTelemetry.Properties.Add($"header-{kvp.Key}", kvp.Value.ToString());
-            }
-            reqTelemetry.Properties.Add("IsAuthenticated", $"{req.HttpContext.User?.Identity.IsAuthenticated}");
-            reqTelemetry.Properties.Add("IdentityCount", $"{req.HttpContext.User?.Identities.Count()}");
-
-            if (req.HttpContext.User.Identities.Any())
-            {
-                foreach (ClaimsIdentity identity in req.HttpContext.User.Identities)
-                {
-                    foreach (var claim in identity.Claims)
-                    {
-                        reqTelemetry.Properties.Add($"{identity.AuthenticationType}-{claim.Type}", claim.Value);
-                    }
-                }
-
-            }
-            _telemetryClient.TrackRequest(reqTelemetry);
-        }
     }
 }

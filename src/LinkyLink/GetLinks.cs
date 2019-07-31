@@ -24,7 +24,6 @@ namespace LinkyLink
             string vanityUrl,
             ILogger log)
         {
-            TrackRequestHeaders(req, $"{nameof(GetLinks)}-HeaderData");
             if (!documents.Any())
             {
                 log.LogInformation($"Bundle for {vanityUrl} not found.");
@@ -54,7 +53,6 @@ namespace LinkyLink
                 return new UnauthorizedResult();
             }
 
-            TrackRequestHeaders(req, $"{nameof(GetBundlesForUser)}-HeaderData");
             if (!documents.Any())
             {
                 log.LogInformation($"No links for user: '{userId}'  found.");

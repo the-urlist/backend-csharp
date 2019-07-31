@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Security.Claims;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -21,6 +23,26 @@ namespace LinkyLink.Infrastructure
             if (requestTelemetry == null) return;
 
             var context = _contextAccessor.HttpContext;
+
+            foreach (var kvp in context.Request.Headers)
+            {
+                requestTelemetry.Properties.Add($"header-{kvp.Key}", kvp.Value.ToString());
+            }
+
+            requestTelemetry.Properties.Add("IsAuthenticated", $"{context.User?.Identity.IsAuthenticated}");
+            requestTelemetry.Properties.Add("IdentityCount", $"{context.User?.Identities.Count()}");
+
+            if (context.User.Identities.Any())
+            {
+                foreach (ClaimsIdentity identity in context.User.Identities)
+                {
+                    foreach (var claim in identity.Claims)
+                    {
+                        requestTelemetry.Properties.Add($"{identity.AuthenticationType}-{claim.Type}", claim.Value);
+                    }
+                }
+
+            }
         }
     }
 }

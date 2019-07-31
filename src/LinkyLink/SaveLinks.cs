@@ -30,7 +30,6 @@ namespace LinkyLink
             )] IAsyncCollector<LinkBundle> documents,
             ILogger log)
         {
-            TrackRequestHeaders(req, $"{nameof(GetLinks)}-HeaderData");
             try
             {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
