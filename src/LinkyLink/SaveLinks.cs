@@ -42,7 +42,7 @@ namespace LinkyLink
                     return new BadRequestObjectResult(problems);
                 }
 
-                string handle = GetTwitterHandle();
+                string handle = GetAccountInfo();
                 linkDocument.UserId = handle;
                 EnsureVanityUrl(linkDocument);
 

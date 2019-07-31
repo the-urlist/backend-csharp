@@ -47,7 +47,7 @@ namespace LinkyLink
            string userId,
            ILogger log)
         {
-            string twitterHandle = GetTwitterHandle();
+            string twitterHandle = GetAccountInfo();
             if (string.IsNullOrEmpty(twitterHandle) || twitterHandle != userId)
             {
                 log.LogInformation("Client is not authorized");
