@@ -19,7 +19,7 @@ namespace LinkyLink.Infrastructure
         public void Initialize(ITelemetry telemetry)
         {
             var requestTelemetry = telemetry as RequestTelemetry;
-            // Is this a TrackRequest() ?
+            
             if (requestTelemetry == null) return;
 
             var context = _contextAccessor.HttpContext;

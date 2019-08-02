@@ -41,7 +41,7 @@ namespace LinkyLink
                     return new BadRequestObjectResult(problems);
                 }
 
-                string handle = GetAccountInfo();
+                string handle = GetAccountInfo().HashedID;
                 linkDocument.UserId = handle;
                 EnsureVanityUrl(linkDocument);
 
