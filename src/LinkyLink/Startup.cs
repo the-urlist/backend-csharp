@@ -14,6 +14,7 @@ namespace LinkyLink
             builder.Services.AddSingleton<IBlackListChecker>(new EnvironmentBlackListChecker());
             builder.Services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddSingleton<ITelemetryInitializer, HeaderTelemetryInitializer>();
+            builder.Services.AddSingleton<Hasher>();
         }
     }
 }
