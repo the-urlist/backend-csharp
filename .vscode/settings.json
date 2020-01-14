@@ -1,8 +1,9 @@
 {
-    "azureFunctions.projectRuntime": "~2",
-    "azureFunctions.projectLanguage": "C#",
-    "azureFunctions.templateFilter": "Core",
-    "azureFunctions.deploySubpath": "bin/Release/netcoreapp2.1/publish",
-    "azureFunctions.preDeployTask": "publish",
-    "debug.internalConsoleOptions": "neverOpen"
-  }
+  "azureFunctions.projectRuntime": "~2",
+  "azureFunctions.projectLanguage": "C#",
+  "azureFunctions.templateFilter": "Core",
+  "azureFunctions.projectSubpath": "src/LinkyLink",
+  "azureFunctions.deploySubpath": "src/LinkyLink/bin/Release/netcoreapp2.2/publish",
+  "azureFunctions.preDeployTask": "publish",
+  "debug.internalConsoleOptions": "neverOpen"
+}

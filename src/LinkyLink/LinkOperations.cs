@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Claims;
 using LinkyLink.Infrastructure;
+using LinkyLink.Models;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -14,53 +15,43 @@ namespace LinkyLink
     {
         protected IHttpContextAccessor _contextAccessor;
         protected IBlackListChecker _blackListChecker;
+        protected Hasher _hasher;
         protected TelemetryClient _telemetryClient;
         protected const string CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        protected const string VANITY_REGEX = @"^[\w\d-]+$";
+        protected const string VANITY_REGEX = @"^([\w\d-])+(/([\w\d-])+)*$";
 
-        public LinkOperations(IHttpContextAccessor contextAccessor, IBlackListChecker blackListChecker)
+        public LinkOperations(IHttpContextAccessor contextAccessor, IBlackListChecker blackListChecker, Hasher hasher)
         {
             _contextAccessor = contextAccessor;
             _blackListChecker = blackListChecker;
+            _hasher = hasher;
             TelemetryConfiguration telemetryConfiguration = TelemetryConfiguration.CreateDefault();
             telemetryConfiguration.TelemetryInitializers.Add(new HeaderTelemetryInitializer(contextAccessor));
             _telemetryClient = new TelemetryClient(telemetryConfiguration);
         }
 
-        protected string GetTwitterHandle()
+        protected UserInfo GetAccountInfo()
         {
-            ClaimsIdentity twitterIdentity = _contextAccessor.HttpContext.User.Identities.SingleOrDefault(id => id.AuthenticationType.Equals("twitter", StringComparison.InvariantCultureIgnoreCase));
-            if (twitterIdentity != null)
-            {
-                string handle = twitterIdentity.Claims.Single(c => c.Type == ClaimTypes.Upn).Value;
-                return handle;
-            }
-            return string.Empty;
-        }
+            var socialIdentities = _contextAccessor.HttpContext.User
+                  .Identities.Where(id => !id.AuthenticationType.Equals("WebJobsAuthLevel", StringComparison.InvariantCultureIgnoreCase));
 
-        [ExcludeFromCodeCoverage]
-        protected void TrackRequestHeaders(HttpRequest req, string requestName)
-        {
-            var reqTelemetry = new RequestTelemetry() { Name = requestName };
-            foreach (var kvp in req.Headers)
+            if (socialIdentities.Any())
             {
-                reqTelemetry.Properties.Add($"header-{kvp.Key}", kvp.Value.ToString());
-            }
-            reqTelemetry.Properties.Add("IsAuthenticated", $"{req.HttpContext.User?.Identity.IsAuthenticated}");
-            reqTelemetry.Properties.Add("IdentityCount", $"{req.HttpContext.User?.Identities.Count()}");
+                var provider = _contextAccessor.HttpContext.Request.Headers["X-MS-CLIENT-PRINCIPAL-IDP"].FirstOrDefault();
 
-            if (req.HttpContext.User.Identities.Any())
-            {
-                foreach (ClaimsIdentity identity in req.HttpContext.User.Identities)
-                {
-                    foreach (var claim in identity.Claims)
-                    {
-                        reqTelemetry.Properties.Add($"{identity.AuthenticationType}-{claim.Type}", claim.Value);
-                    }
-                }
+                var primaryIdentity = socialIdentities.First();
+                var email = primaryIdentity.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Email).Value;
+                var userInfo = new UserInfo(provider, _hasher.HashString(email);
 
+                var evt = new EventTelemetry("UserInfo Retrieved");
+                evt.Properties.Add("Provider", provider);
+                evt.Properties.Add("EmailAquired", (string.IsNullOrEmpty(email).ToString()));
+                _telemetryClient.TrackEvent(evt);
+
+                return userInfo;
             }
-            _telemetryClient.TrackRequest(reqTelemetry);
+
+            return UserInfo.Empty; ;
         }
     }
 }

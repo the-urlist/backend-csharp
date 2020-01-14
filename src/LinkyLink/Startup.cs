@@ -2,6 +2,7 @@
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using LinkyLink.Infrastructure;
+using Microsoft.ApplicationInsights.Extensibility;
 
 [assembly: FunctionsStartup(typeof(LinkyLink.Startup))]
 namespace LinkyLink
@@ -12,6 +13,8 @@ namespace LinkyLink
         {
             builder.Services.AddSingleton<IBlackListChecker>(new EnvironmentBlackListChecker());
             builder.Services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddSingleton<ITelemetryInitializer, HeaderTelemetryInitializer>();
+            builder.Services.AddSingleton<Hasher>();
         }
     }
 }

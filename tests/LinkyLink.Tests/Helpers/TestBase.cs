@@ -46,7 +46,10 @@ namespace LinkyLink.Tests.Helpers
 
         protected Stream GetHttpRequestBodyStream(object bodyContent)
         {
-            byte[] bytes = null;
+#pragma warning disable IDE0059
+            byte[] bytes = default;
+#pragma warning restore IDE0059
+
             if (bodyContent is string bodyString)
             {
                 bytes = Encoding.UTF8.GetBytes(bodyString);

@@ -25,7 +25,7 @@ namespace LinkyLink.Tests
         [Fact]
         public async Task UpdateList_Request_Missing_Auth_Credentials_Should_Return_UnAuthorized()
         {
-            // Arrange            
+            // Arrange
             var docs = Fixture.CreateMany<LinkBundle>();
             RemoveAuthFromContext();
 
@@ -70,7 +70,7 @@ namespace LinkyLink.Tests
             IDocumentClient docClient = this.Fixture.Create<IDocumentClient>();
 
             LinkBundle captured = null;
-            A.CallTo(() => docClient.UpsertDocumentAsync(A<Uri>.Ignored, A<LinkBundle>.Ignored, A<RequestOptions>.Ignored, false, default(CancellationToken)))
+            A.CallTo(() => docClient.UpsertDocumentAsync(A<Uri>.Ignored, A<LinkBundle>.Ignored, A<RequestOptions>.Ignored, false, default))
                 .Invokes((IFakeObjectCall callOb) =>
                 {
                     captured = callOb.Arguments[1] as LinkBundle;

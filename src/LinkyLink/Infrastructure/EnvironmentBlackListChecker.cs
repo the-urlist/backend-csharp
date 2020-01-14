@@ -7,7 +7,7 @@ namespace LinkyLink.Infrastructure
 
     public class EnvironmentBlackListChecker : IBlackListChecker
     {
-        private string[] _blackList;
+        private readonly string[] _blackList;
 
         public EnvironmentBlackListChecker(string key = "URL_BLACKLIST")
         {

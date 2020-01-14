@@ -25,11 +25,11 @@ namespace LinkyLink
             [CosmosDB(
                 databaseName: "linkylinkdb",
                 collectionName: "linkbundles",
-                ConnectionStringSetting = "LinkLinkConnection"
+                ConnectionStringSetting = "LinkLinkConnection",
+                CreateIfNotExists = true
             )] IAsyncCollector<LinkBundle> documents,
             ILogger log)
         {
-            TrackRequestHeaders(req, $"{nameof(GetLinks)}-HeaderData");
             try
             {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -41,7 +41,7 @@ namespace LinkyLink
                     return new BadRequestObjectResult(problems);
                 }
 
-                string handle = GetTwitterHandle();
+                string handle = GetAccountInfo().HashedID;
                 linkDocument.UserId = handle;
                 EnsureVanityUrl(linkDocument);
 
