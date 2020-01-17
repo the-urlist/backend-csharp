@@ -41,7 +41,7 @@ namespace LinkyLink
 
                 var primaryIdentity = socialIdentities.First();
                 var email = primaryIdentity.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Email).Value;
-                var userInfo = new UserInfo(provider, _hasher.HashString(email);
+                var userInfo = new UserInfo(provider, _hasher.HashString(email));
 
                 var evt = new EventTelemetry("UserInfo Retrieved");
                 evt.Properties.Add("Provider", provider);
