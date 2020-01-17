@@ -59,7 +59,7 @@ namespace LinkyLink.Tests
         }
 
         [Fact]
-        public async Task SaveLinks_Valid_Payload_Returns_CreatRequest()
+        public async Task SaveLinks_Valid_Payload_Returns_CreateRequest()
         {
             // Arrange
             ILogger fakeLogger = A.Fake<ILogger>();
@@ -77,9 +77,9 @@ namespace LinkyLink.Tests
 
             CreatedResult createdResult = result as CreatedResult;
             LinkBundle createdBundle = createdResult.Value as LinkBundle;
-            Assert.Equal("userid", createdBundle.UserId);
+            Assert.Equal(_hasher.HashString("someone@linkylink.com"), createdBundle.UserId);
 
-            A.CallTo(() => collector.AddAsync(A<LinkBundle>.That.Matches(b => b.UserId == "userid"),
+            A.CallTo(() => collector.AddAsync(A<LinkBundle>.That.Matches(b => b.UserId == _hasher.HashString("someone@linkylink.com")),
                 default)).MustHaveHappened();
         }
 

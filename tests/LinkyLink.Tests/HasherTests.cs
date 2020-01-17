@@ -19,7 +19,6 @@ namespace LinkyLink.Tests
         [InlineData("securestring")]
         [InlineData("secretdata")]
         [InlineData("Data")]
-        [InlineData("")]
         public void HashString_Hashes_Provided_String(string dataToProtect)
         {
             // Arrange
@@ -47,7 +46,7 @@ namespace LinkyLink.Tests
 
             //Act
             var exp = Assert.Throws<ArgumentException>(() => hasher.HashString(string.Empty));
-            Assert.Equal("Da ta parameter was null or empty", exp.Message);
+            Assert.Equal("Data parameter was null or empty (Parameter 'data')", exp.Message);
         }
 
         [Theory]
