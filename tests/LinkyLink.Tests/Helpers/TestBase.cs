@@ -18,9 +18,13 @@ namespace LinkyLink.Tests.Helpers
 {
     public abstract class TestBase
     {
+        private const string HASHER_KEY = "TestHasherKey";
+        private const string HASHER_SALT = "TestHasherSalt";
         private IBlackListChecker _blackListChecker = new EnvironmentBlackListChecker();
-        protected LinkOperations _linkOperations;
+
         protected IFixture Fixture { get; set; }
+        protected LinkOperations _linkOperations;
+        protected readonly Hasher _hasher = new Hasher(HASHER_KEY, HASHER_SALT);
 
         public TestBase()
         {
@@ -28,7 +32,7 @@ namespace LinkyLink.Tests.Helpers
             {
                 HttpContext = CreateContext(true)
             };
-            _linkOperations = new LinkOperations(httpContextAccessor, _blackListChecker);
+            _linkOperations = new LinkOperations(httpContextAccessor, _blackListChecker, _hasher);
 
             this.Fixture = new Fixture()
                 .Customize(new AutoFakeItEasyCustomization());
@@ -127,7 +131,7 @@ namespace LinkyLink.Tests.Helpers
             {
                 HttpContext = CreateContext()
             };
-            _linkOperations = new LinkOperations(httpContextAccessor, _blackListChecker);
+            _linkOperations = new LinkOperations(httpContextAccessor, _blackListChecker, _hasher);
         }
 
         protected void AddAuthToContext()
@@ -136,7 +140,7 @@ namespace LinkyLink.Tests.Helpers
             {
                 HttpContext = CreateContext(true)
             };
-            _linkOperations = new LinkOperations(httpContextAccessor, _blackListChecker);
+            _linkOperations = new LinkOperations(httpContextAccessor, _blackListChecker, _hasher);
         }
 
         private static HttpContext CreateContext(bool authenticated = false)
@@ -144,6 +148,7 @@ namespace LinkyLink.Tests.Helpers
             ClaimsIdentity defaultIdentity = new ClaimsIdentity("WebJobsAuthLevel");
             defaultIdentity.AddClaim(new Claim(Constants.FunctionsAuthLevelClaimType, "Function"));
             defaultIdentity.AddClaim(new Claim(Constants.FunctionsAuthLevelKeyNameClaimType, "default"));
+            defaultIdentity.AddClaim(new Claim(ClaimTypes.Email, "someone@linkylink.com"));
 
             ClaimsPrincipal principal = new ClaimsPrincipal(defaultIdentity);
 
@@ -153,6 +158,7 @@ namespace LinkyLink.Tests.Helpers
                 twitterIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, "1111"));
                 twitterIdentity.AddClaim(new Claim(ClaimTypes.Name, "First Last"));
                 twitterIdentity.AddClaim(new Claim(ClaimTypes.Upn, "userid"));
+                twitterIdentity.AddClaim(new Claim(ClaimTypes.Email, "someone@linkylink.com"));
                 principal.AddIdentity(twitterIdentity);
             }
 

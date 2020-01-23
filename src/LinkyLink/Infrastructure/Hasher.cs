@@ -28,11 +28,10 @@ namespace LinkyLink.Infrastructure
 
             byte[] keyByte = System.Text.Encoding.UTF8.GetBytes(_key);
             byte[] messageBytes = System.Text.Encoding.UTF8.GetBytes(data);
-            using (var hmacsha256 = new HMACSHA384(keyByte))
-            {
-                byte[] hashmessage = hmacsha256.ComputeHash(messageBytes);
-                return Convert.ToBase64String(hashmessage);
-            }
+            using var hmacsha256 = new HMACSHA384(keyByte);
+            byte[] hashmessage = hmacsha256.ComputeHash(messageBytes);
+
+            return Convert.ToBase64String(hashmessage);
         }
 
         public virtual bool Verify(string data, string hashedData)
