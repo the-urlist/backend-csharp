@@ -28,6 +28,7 @@ namespace LinkyLink
             )] IEnumerable<Document> documents,
             [CosmosDB(ConnectionStringSetting = "LinkLinkConnection")] DocumentClient docClient,
             string vanityUrl,
+            Binder binder,
             ILogger log)
         {
             string handle = GetAccountInfo().HashedID;
@@ -55,6 +56,8 @@ namespace LinkyLink
 
                 RequestOptions reqOptions = new RequestOptions { PartitionKey = new PartitionKey(vanityUrl) };
                 await docClient.DeleteDocumentAsync(doc.SelfLink, reqOptions);
+
+                await DeleteQRCodeAsync(vanityUrl, binder);
             }
             catch (Exception ex)
             {
@@ -68,6 +71,7 @@ namespace LinkyLink
         public async Task<IActionResult> DeleteLinks(
            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "links")] HttpRequest req,
            [CosmosDB(ConnectionStringSetting = "LinkLinkConnection")] DocumentClient docClient,
+           Binder binder,
            ILogger log)
         {
             string handle = GetAccountInfo().HashedID;
@@ -102,11 +106,12 @@ namespace LinkyLink
                         if (!handle.Equals(userId, StringComparison.InvariantCultureIgnoreCase))
                         {
                             log.LogWarning($"{userId} is trying to delete {vanityUrl} but is not the owner.");
-                            log.LogWarning($"Skipping deletion of colloection: {vanityUrl}.");
+                            log.LogWarning($"Skipping deletion of collection: {vanityUrl}.");
                             continue;
                         }
                         RequestOptions reqOptions = new RequestOptions { PartitionKey = new PartitionKey(doc.vanityUrl) };
                         await docClient.DeleteDocumentAsync(doc._self, reqOptions);
+                        await DeleteQRCodeAsync(vanityUrl, binder);
                         deleteCount++;
                     }
                 }

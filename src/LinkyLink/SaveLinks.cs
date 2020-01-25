@@ -1,19 +1,19 @@
 using System;
 using System.IO;
+using System.Linq;
+using System.Net;
+using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using LinkyLink.Models;
+using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Documents;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Microsoft.Azure.Documents;
-using System.Net;
-using System.Linq;
-using System.Security.Cryptography;
-using Microsoft.ApplicationInsights.DataContracts;
-using System.Text.RegularExpressions;
-using LinkyLink.Models;
 
 namespace LinkyLink
 {
@@ -28,6 +28,7 @@ namespace LinkyLink
                 ConnectionStringSetting = "LinkLinkConnection",
                 CreateIfNotExists = true
             )] IAsyncCollector<LinkBundle> documents,
+            Binder binder,
             ILogger log)
         {
             try
@@ -69,6 +70,11 @@ namespace LinkyLink
                 }
 
                 await documents.AddAsync(linkDocument);
+
+                string payload = req.Host + linkDocument.VanityUrl;
+
+                await GenerateQRCodeAsync(linkDocument, req, binder);
+
                 return new CreatedResult($"/{linkDocument.VanityUrl}", linkDocument);
             }
             catch (DocumentClientException ex) when (ex.StatusCode == HttpStatusCode.Conflict)

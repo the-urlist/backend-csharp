@@ -17,7 +17,7 @@ namespace LinkyLink.Tests
         [Fact]
         public async Task DeleteLink_Request_Missing_Auth_Credentials_Should_Return_UnAuthorized()
         {
-            // Arrange            
+            // Arrange
             var docs = Fixture.CreateMany<Document>();
             RemoveAuthFromContext();
 

@@ -20,12 +20,13 @@ namespace LinkyLink.Tests
         {
             // Arrange
             ILogger fakeLogger = A.Fake<ILogger>();
+            Binder fakeBinder = A.Fake<Binder>();
             HttpRequest req = this.DefaultRequest;
             req.Body = this.GetHttpRequestBodyStream("");
             IAsyncCollector<LinkBundle> collector = A.Fake<IAsyncCollector<LinkBundle>>();
 
             // Act
-            IActionResult result = await _linkOperations.SaveLinks(req, collector, fakeLogger);
+            IActionResult result = await _linkOperations.SaveLinks(req, collector, fakeBinder, fakeLogger);
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
@@ -42,6 +43,7 @@ namespace LinkyLink.Tests
         {
             // Arrange
             ILogger fakeLogger = A.Fake<ILogger>();
+            Binder fakeBinder = A.Fake<Binder>();
             HttpRequest req = this.DefaultRequest;
 
             LinkBundle payload = this.Fixture.Create<LinkBundle>();
@@ -51,7 +53,7 @@ namespace LinkyLink.Tests
             IAsyncCollector<LinkBundle> collector = A.Fake<IAsyncCollector<LinkBundle>>();
 
             // Act
-            IActionResult result = await _linkOperations.SaveLinks(req, collector, fakeLogger);
+            IActionResult result = await _linkOperations.SaveLinks(req, collector, fakeBinder, fakeLogger);
 
             // Assert
             Assert.IsType<BadRequestResult>(result);
@@ -63,6 +65,7 @@ namespace LinkyLink.Tests
         {
             // Arrange
             ILogger fakeLogger = A.Fake<ILogger>();
+            Binder fakeBinder = A.Fake<Binder>();
             LinkBundle bundle = Fixture.Create<LinkBundle>();
 
             HttpRequest req = this.AuthenticatedRequest;
@@ -70,7 +73,7 @@ namespace LinkyLink.Tests
             IAsyncCollector<LinkBundle> collector = A.Fake<IAsyncCollector<LinkBundle>>();
 
             // Act
-            IActionResult result = await _linkOperations.SaveLinks(req, collector, fakeLogger);
+            IActionResult result = await _linkOperations.SaveLinks(req, collector, fakeBinder, fakeLogger);
 
             // Assert
             Assert.IsType<CreatedResult>(result);
@@ -91,6 +94,7 @@ namespace LinkyLink.Tests
         {
             // Arrange
             ILogger fakeLogger = A.Fake<ILogger>();
+            Binder fakeBinder = A.Fake<Binder>();
             LinkBundle bundle = Fixture.Create<LinkBundle>();
             bundle.VanityUrl = vanityUrl;
 
@@ -99,7 +103,7 @@ namespace LinkyLink.Tests
             IAsyncCollector<LinkBundle> collector = A.Fake<IAsyncCollector<LinkBundle>>();
 
             // Act
-            IActionResult result = await _linkOperations.SaveLinks(req, collector, fakeLogger);
+            IActionResult result = await _linkOperations.SaveLinks(req, collector, fakeBinder, fakeLogger);
 
             // Assert
             Assert.IsType<CreatedResult>(result);
@@ -117,6 +121,7 @@ namespace LinkyLink.Tests
         {
             // Arrange
             ILogger fakeLogger = A.Fake<ILogger>();
+            Binder fakeBinder = A.Fake<Binder>();
             LinkBundle bundle = Fixture.Create<LinkBundle>();
             bundle.VanityUrl = string.Empty;
 
@@ -125,7 +130,7 @@ namespace LinkyLink.Tests
             IAsyncCollector<LinkBundle> collector = A.Fake<IAsyncCollector<LinkBundle>>();
 
             // Act
-            IActionResult result = await _linkOperations.SaveLinks(req, collector, fakeLogger);
+            IActionResult result = await _linkOperations.SaveLinks(req, collector, fakeBinder, fakeLogger);
 
             // Assert
             Assert.IsType<CreatedResult>(result);
