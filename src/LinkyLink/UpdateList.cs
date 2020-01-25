@@ -31,7 +31,7 @@ namespace LinkyLink
             string vanityUrl,
             ILogger log)
         {
-            string handle = GetTwitterHandle();
+            string handle = GetAccountInfo().HashedID;
             if (string.IsNullOrEmpty(handle)) return new UnauthorizedResult();
 
             if (!documents.Any())

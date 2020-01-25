@@ -72,7 +72,7 @@ namespace LinkyLink.Tests
             ILogger fakeLogger = A.Fake<ILogger>();
 
             // Act
-            IActionResult result = _linkOperations.GetBundlesForUser(this.AuthenticatedRequest, docs, "userid", fakeLogger);
+            IActionResult result = _linkOperations.GetBundlesForUser(this.AuthenticatedRequest, docs, _hasher.HashString("someone@linkylink.com"), fakeLogger);
 
             // Assert
             Assert.IsType<NotFoundResult>(result);
@@ -89,7 +89,7 @@ namespace LinkyLink.Tests
             var docs = Fixture.CreateMany<Document>();
 
             // Act
-            IActionResult result = _linkOperations.GetBundlesForUser(this.AuthenticatedRequest, docs, "userid", A.Dummy<ILogger>());
+            IActionResult result = _linkOperations.GetBundlesForUser(this.AuthenticatedRequest, docs, _hasher.HashString("someone@linkylink.com"), A.Dummy<ILogger>());
 
             //Assert
             Assert.IsType<OkObjectResult>(result);

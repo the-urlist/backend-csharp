@@ -31,7 +31,7 @@ namespace LinkyLink
             Binder binder,
             ILogger log)
         {
-            string handle = GetTwitterHandle();
+            string handle = GetAccountInfo().HashedID;
 
             //not logged in? Bye...
             if (string.IsNullOrEmpty(handle)) return new UnauthorizedResult();
@@ -74,7 +74,7 @@ namespace LinkyLink
            Binder binder,
            ILogger log)
         {
-            string handle = GetTwitterHandle();
+            string handle = GetAccountInfo().HashedID;
 
             //not logged in? Bye...
             if (string.IsNullOrEmpty(handle)) return new UnauthorizedResult();

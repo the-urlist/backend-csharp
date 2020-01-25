@@ -12,7 +12,7 @@ namespace LinkyLink.Infrastructure
         public EnvironmentBlackListChecker(string key = "URL_BLACKLIST")
         {
             string settingsValue = Environment.GetEnvironmentVariable(key);
-            this._blackList = settingsValue != null ? settingsValue.Split(',') : new string[] { };
+            this._blackList = settingsValue != null ? settingsValue.Split(',') : Array.Empty<string>();
         }
 
         public Task<bool> Check(string value)
