@@ -6,12 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofixture" Version="4.11.0" />
-    <PackageReference Include="AutoFixture.AutoFakeItEasy" Version="4.11.0" />
-    <PackageReference Include="FakeItEasy" Version="5.5.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
+    <PackageReference Include="Autofixture" Version="4.17.0" />
+    <PackageReference Include="AutoFixture.AutoFakeItEasy" Version="4.17.0" />
+    <PackageReference Include="FakeItEasy" Version="7.0.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
