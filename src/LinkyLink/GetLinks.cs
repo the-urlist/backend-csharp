@@ -7,13 +7,17 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Azure.Documents;
 using LinkyLink.Models;
+using System.Net;
+using System.Threading.Tasks;
+using Microsoft.Azure.Documents.Client;
+using System;
 
 namespace LinkyLink
 {
     public partial class LinkOperations
     {
         [FunctionName(nameof(GetLinks))]
-        public IActionResult GetLinks(
+        public async Task<IActionResult> GetLinks(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "links/{vanityUrl}")] HttpRequest req,
             [CosmosDB(
                 databaseName: "linkylinkdb",
@@ -21,6 +25,7 @@ namespace LinkyLink
                 ConnectionStringSetting = "LinkLinkConnection",
                 SqlQuery = "SELECT * FROM linkbundles lb WHERE LOWER(lb.vanityUrl) = LOWER({vanityUrl})"
             )] IEnumerable<LinkBundle> documents,
+            [CosmosDB(ConnectionStringSetting = "LinkLinkConnection")] IDocumentClient docClient,
             string vanityUrl,
             ILogger log)
         {
@@ -31,6 +36,13 @@ namespace LinkyLink
             }
 
             LinkBundle doc = documents.Single();
+
+            ResourceResponse<Document> incrementResult = await IncrementUniqueView(docClient, doc, req, vanityUrl);
+            if(incrementResult.StatusCode != HttpStatusCode.OK)
+            {
+                log.LogInformation($"Couldn't update the number of unique views.");
+            }
+
             return new OkObjectResult(doc);
         }
 
@@ -40,7 +52,7 @@ namespace LinkyLink
            [CosmosDB(
                 databaseName: "linkylinkdb",
                 collectionName: "linkbundles",
-                ConnectionStringSetting = "LinkLinkConnection",
+                ConnectionStringSetting = "LinkLinkConnection"  ,
                 SqlQuery = "SELECT c.userId, c.vanityUrl, c.description, ARRAY_LENGTH(c.links) as linkCount FROM c where c.userId = {userId}"
             )] IEnumerable<Document> documents,
            string userId,
