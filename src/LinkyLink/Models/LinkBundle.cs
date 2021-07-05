@@ -27,5 +27,10 @@ namespace LinkyLink.Models
 
         [JsonProperty("links", NullValueHandling = NullValueHandling.Ignore)]
         public IDictionary<string, string>[] Links { get; set; }
+
+        [JsonProperty("uniqueViews", NullValueHandling = NullValueHandling.Ignore)]
+        public int UniqueViews { get; set; }
+
+        public HashSet<string> HashedIps { get; set; } = new HashSet<string>();
     }
 }

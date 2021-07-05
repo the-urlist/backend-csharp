@@ -10,6 +10,8 @@ using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Azure.Documents;
+using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Primitives;
 using Microsoft.WindowsAzure.Storage;
@@ -61,6 +63,20 @@ namespace LinkyLink
             }
 
             return UserInfo.Empty; ;
+        }
+
+        private async Task<ResourceResponse<Document>> IncrementUniqueView(IDocumentClient docClient, LinkBundle doc, HttpRequest req, string vanityUrl)
+        {
+            string hashedIp = IPAddressUtils.GetHashedIp(doc.Id, req);
+            if (!string.IsNullOrWhiteSpace(hashedIp) && doc.HashedIps.Add(hashedIp))
+            {
+                doc.UniqueViews++;
+            }
+
+            Uri collUri = UriFactory.CreateDocumentCollectionUri("linkylinkdb", "linkbundles");
+            RequestOptions reqOptions = new() { PartitionKey = new PartitionKey(vanityUrl) };
+
+            return await docClient.UpsertDocumentAsync(collUri, doc, reqOptions);
         }
 
         private static async Task GenerateQRCodeAsync(LinkBundle linkDocument, HttpRequest req, Binder binder)
